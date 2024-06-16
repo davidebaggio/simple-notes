@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+// frontend/src/App.js
+import React, { useState, useEffect } from 'react';
+import NoteList from './components/NoteList';
+import NoteForm from './components/NoteForm';
+import { getNotes } from './services/noteService';
+import './App.css'
 
-function App() {
+const App = () => {
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    async function fetchNotes() {
+      const notes = await getNotes();
+      setNotes(notes);
+    }
+    fetchNotes();
+  }, []);
+
+  const handleNoteAdded = (newNote) => {
+    setNotes((prevNotes) => [...prevNotes, newNote]);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>App per Prendere Appunti</h1>
+      <NoteForm onNoteAdded={handleNoteAdded} />
+      <NoteList notes={notes} setNotes={setNotes} />
     </div>
   );
-}
+};
 
 export default App;
